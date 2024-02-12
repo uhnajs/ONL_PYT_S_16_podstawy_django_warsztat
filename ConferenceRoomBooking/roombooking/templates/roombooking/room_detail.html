@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>{{ room.name }}</h2>
+<p>Pojemność: {{ room.capacity }}</p>
+<p>Projektor: {% if room.projector_availability %}Tak{% else %}Nie{% endif %}</p>
+
+<h3>Przyszłe rezerwacje</h3>
+{% if reservations %}
+    <ul>
+    {% for reservation in reservations %}
+        <li>{{ reservation.date }} - Komentarz: {{ reservation.comment|default:"Brak komentarza" }}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>Brak przyszłych rezerwacji.</p>
+{% endif %}
+
+<a href="{% url 'modify_room' id=room.id %}">Edytuj salę</a> |
+<a href="{% url 'delete_room' id=room.id %}" onclick="return confirm('Czy na pewno chcesz usunąć tę salę?');">Usuń salę</a> |
+<a href="{% url 'reserve_room' id=room.id %}">Zarezerwuj salę</a>
+{% endblock %}

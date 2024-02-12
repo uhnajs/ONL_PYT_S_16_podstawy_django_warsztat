@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Rezerwacja sali: {{ room.name }}</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Zarezerwuj</button>
+</form>
+
+<h3>Wszystkie rezerwacje sali</h3>
+{% if reservations %}
+<ul>
+    {% for reservation in reservations %}
+    <li>{{ reservation.date }} - {{ reservation.comment }}</li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>Brak rezerwacji dla tej sali.</p>
+{% endif %}
+
+<a href="{% url 'room_list' %}">Powrót do listy sal</a>
+{% endblock %}

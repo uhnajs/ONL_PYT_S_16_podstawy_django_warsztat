@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Wyszukiwarka sal</h2>
+<form action="{% url 'search_rooms' %}" method="get">
+    Nazwa sali: <input type="text" name="name" value="{{ request.GET.name }}">
+    Minimalna pojemność: <input type="number" name="capacity" min="0" value="{{ request.GET.capacity }}">
+    Projektor: <input type="checkbox" name="projector" {% if request.GET.projector == 'on' %}checked{% endif %}>
+    <button type="submit">Szukaj</button>
+</form>
+
+{% if no_results %}
+    <p>Brak wolnych sal dla podanych kryteriów wyszukiwania.</p>
+{% else %}
+    {% if search_term %}
+        <h3>Wyniki wyszukiwania dla: "{{ search_term }}"</h3>
+    {% endif %}
+    <table>
+    <thead>
+        <tr>
+            <th>Nazwa</th>
+            <th>Pojemność</th>
+            <th>Projektor</th>
+            <th>Zajęta ({{ today }})</th>
+            <th>Akcje</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for room in rooms %}
+        <tr>
+            <td>{{ room.name }}</td>
+            <td>{{ room.capacity }}</td>
+            <td>{{ room.projector_availability|yesno:"Tak,Nie" }}</td>
+            <td>{{ rooms_availability|default:room.id|yesno:"Nie,Tak" }}</td>
+
+            <td>
+                <a href="{% url 'room_detail' id=room.id %}">Szczegóły</a> |
+                <a href="{% url 'modify_room' id=room.id %}">Edytuj</a> |
+                <a href="{% url 'delete_room' id=room.id %}" onclick="return confirm('Czy na pewno chcesz usunąć tę salę?');">Usuń</a>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+{% endif %}
+{% endblock %}
